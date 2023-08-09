@@ -1,0 +1,67 @@
+ros2 launch my_robot rsp.launch.py
+
+source install/setup.bash
+
+rviz2
+
+ros2 run joint_state_publisher_gui joint_state_publisher_gui
+
+rviz2 -d src/my_robot/config/view_bot.rviz 
+
+ros2 launch my_robot rsp.launch.py use_sim_time:=true
+
+ros2 launch gazebo_ros gazebo.launch.py
+
+ros2 run gazebo_ros spawn_entity.py -topic robot_description -entity bot_name
+
+# robot_description is our topic which containts the rviz robot_description data
+
+ros2 launch my_robot launch_sim.launch.py  
+
+#all together
+
+ros2 run teleop_twist_keyboard teleop_twist_keyboard
+
+ros2 run teleop_twist_joy --teleop_node  joy -- joy_node
+
+ros2 launch rplidar.launch.py
+
+
+sudo apt install ros-humble-gazebo-ros-pkgs
+
+ros2 launch gazebo_ros gazebo.launch.py
+
+
+# plugins for image compressed
+
+sudo apt install ros-humble-image-transport-plugins
+
+#rvizs cannot handle image compressed
+
+sudo apt install ros-humble-rqt-image-view
+
+ros2 run rqt_image_view rqt_image_view
+
+
+# compressed or uncompressed topic
+ros2 run image_transport list_transports
+
+Declared transports:
+image_transport/compressed
+image_transport/compressedDepth
+image_transport/raw
+image_transport/theora
+
+ros2 run image_transport republish compressed raw --ros-args -r in/compressed:=/camera/image_raw/compressed -r out:=/camera/image_raw/uncompressed
+
+ros2 launch my_robot launch_sim.launch.py world:=/home/karthik/Articulated_Robotics/my_robot/dev_ws/src/my_robot/worlds/obstacles.world
+
+
+sudo killall -9 gazebo gzserver gzclient
+
+# depth sensor
+sudo apt install python3-rosdep
+sudo rosdep init
+
+ros2 launch depthai_examples rgb_publisher.launch.py
+ros2 launch depthai_examples stereo.launch.py camera_model:=OAK-D-LITE

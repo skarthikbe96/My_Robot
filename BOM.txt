@@ -22,7 +22,7 @@ Motor Driver(0.1A) L298N -
 
 LCD screen(1A)
 
-Depth camera
+Depth camera: luxonis depthai oak-d lite
 
 
 

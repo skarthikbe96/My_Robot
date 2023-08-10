@@ -65,3 +65,57 @@ sudo rosdep init
 
 ros2 launch depthai_examples rgb_publisher.launch.py
 ros2 launch depthai_examples stereo.launch.py camera_model:=OAK-D-LITE
+
+
+journalctl -fe
+
+systemctl get-default
+
+sudo systemctl set-default multi-user.target
+
+
+ros2 control list_hardware_interfaces
+
+ros2 run controller_manager ros2_contor_node
+
+ros2 run controller_manager spawner diff_cont
+
+ros2 run controller_manager spawner joint_broad
+
+ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diff_cont/cmd_vel_unstamped
+
+/opt/ros/humble/share/slam_toolbox/config$ ls
+mapper_params_lifelong.yaml      mapper_params_offline.yaml       mapper_params_online_sync.yaml
+mapper_params_localization.yaml  mapper_params_online_async.yaml  slam_toolbox_default.rviz
+
+
+# running the slam toolbox
+ros2 launch slam_toolbox online_async_launch.py params_file:=/home/karthik/Articulated_Robotics/my_robot/dev_ws/src/my_robot/config/mapper_params_online_async.yaml use_sim_time:=true
+
+ros2 service list
+
+# saving the map 
+
+Add new panel in rviz slamtoolboxplugin
+when you saved the map we can reuse this for localization
+
+rerun the slam toolbox
+
+ros2 run nav2_map_server map_server --ros-args -p yaml_filename:=my_map_save.yaml -p use_sim_time:=true
+
+ros2 run nav2_util lifecycle_bringup map_server
+
+ros2 run nav2_amcl amcl --ros-args -p use_sim_time:=true
+
+ros2 run nav2_util lifecycle_bringup amcl
+
+ros publish the speed of the motor in /cmd_vel but we are using in /diff_cont/cmd_vel_unstamped
+
+# launch nav2 launch nav2_bringup
+ros2 launch nav2_bringup navigation_launch.py use_sim_time:=true
+#add map in rviz2 topic is global_costmap/costmap
+
+use 2d goal pose to mark the deatination
+
+ros2 launch nav2_bringup localization_launch.py map:=/home/karthik/Articulated_Robotics/my_robot/dev_ws/new_map_save.yaml use_sim_time:=true
+
